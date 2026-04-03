@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Claude Code global settings installer
-# Symlinks/copies config files from this repo into ~/.claude.
+# Copies config files from this repo into ~/.claude with smart merging.
 
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 CLAUDE_HOME="${CLAUDE_HOME:-$HOME/.claude}"
@@ -38,36 +38,72 @@ backup_if_exists() {
   fi
 }
 
-# --- Symlink helper ---
+# --- Copy helper ---
 
-create_symlink() {
+copy_file() {
   local src="$1"
   local dest="$2"
 
   backup_if_exists "$dest"
 
+  # Remove existing symlink if present (migration from old symlink approach)
   if [ -L "$dest" ]; then
     rm "$dest"
-  elif [ -e "$dest" ]; then
-    rm -rf "$dest"
   fi
 
-  ln -s "$src" "$dest"
-  info "  Symlink: $(basename "$dest") -> $src"
+  cp "$src" "$dest"
+  info "  Copied: $(basename "$dest")"
 }
 
-# --- 1. Symlink: CLAUDE.md, RTK.md ---
+# --- 1. CLAUDE.md (merge: preserve OMC block from existing) ---
 
 info ""
-info "=== Markdown config files ==="
+info "=== CLAUDE.md ==="
 
-for md_file in CLAUDE.md RTK.md; do
-  if [ -f "$REPO_DIR/$md_file" ]; then
-    create_symlink "$REPO_DIR/$md_file" "$CLAUDE_HOME/$md_file"
+CLAUDE_MD_SRC="$REPO_DIR/CLAUDE.md"
+CLAUDE_MD_DEST="$CLAUDE_HOME/CLAUDE.md"
+
+if [ -f "$CLAUDE_MD_SRC" ]; then
+  # Remove existing symlink if present
+  if [ -L "$CLAUDE_MD_DEST" ]; then
+    rm "$CLAUDE_MD_DEST"
   fi
-done
 
-# --- 2. Symlink: rules/ ---
+  if [ -f "$CLAUDE_MD_DEST" ]; then
+    backup_if_exists "$CLAUDE_MD_DEST"
+
+    # Extract OMC block from existing file
+    OMC_BLOCK=""
+    if grep -q '<!-- OMC:START -->' "$CLAUDE_MD_DEST" 2>/dev/null; then
+      OMC_BLOCK=$(sed -n '/<!-- OMC:START -->/,/<!-- OMC:END -->/p' "$CLAUDE_MD_DEST")
+    fi
+
+    # Extract non-OMC content from repo source
+    NON_OMC=$(sed '/<!-- OMC:START -->/,/<!-- OMC:END -->/d' "$CLAUDE_MD_SRC")
+
+    # Assemble: existing OMC block + repo's non-OMC content
+    if [ -n "$OMC_BLOCK" ]; then
+      printf '%s\n\n%s\n' "$OMC_BLOCK" "$NON_OMC" > "$CLAUDE_MD_DEST"
+    else
+      echo "$NON_OMC" > "$CLAUDE_MD_DEST"
+    fi
+    info "  CLAUDE.md merged (OMC block preserved, base content updated)"
+  else
+    cp "$CLAUDE_MD_SRC" "$CLAUDE_MD_DEST"
+    info "  CLAUDE.md created"
+  fi
+fi
+
+# --- 2. RTK.md ---
+
+info ""
+info "=== RTK.md ==="
+
+if [ -f "$REPO_DIR/RTK.md" ]; then
+  copy_file "$REPO_DIR/RTK.md" "$CLAUDE_HOME/RTK.md"
+fi
+
+# --- 3. Rules ---
 
 info ""
 info "=== Rules ==="
@@ -77,10 +113,10 @@ mkdir -p "$CLAUDE_HOME/rules"
 for rule_file in "$REPO_DIR"/rules/*.md; do
   [ -f "$rule_file" ] || continue
   name=$(basename "$rule_file")
-  create_symlink "$rule_file" "$CLAUDE_HOME/rules/$name"
+  copy_file "$rule_file" "$CLAUDE_HOME/rules/$name"
 done
 
-# --- 3. Symlink: hooks/ ---
+# --- 4. Hooks ---
 
 info ""
 info "=== Hooks ==="
@@ -90,13 +126,13 @@ mkdir -p "$CLAUDE_HOME/hooks"
 for hook_file in "$REPO_DIR"/hooks/*; do
   [ -f "$hook_file" ] || continue
   name=$(basename "$hook_file")
-  create_symlink "$hook_file" "$CLAUDE_HOME/hooks/$name"
+  copy_file "$hook_file" "$CLAUDE_HOME/hooks/$name"
 done
 
 # Ensure scripts are executable
-chmod +x "$REPO_DIR"/hooks/*.sh 2>/dev/null || true
+chmod +x "$CLAUDE_HOME"/hooks/*.sh 2>/dev/null || true
 
-# --- 4. Merge settings.json ---
+# --- 5. Merge settings.json ---
 
 info ""
 info "=== Settings ==="
@@ -142,3 +178,5 @@ info "  - claude-mem:       claude plugin install claude-mem@thedotmack"
 info "  - jq:               brew install jq"
 info ""
 info "Backup location: $BACKUP_DIR"
+info ""
+info "To update after git pull: re-run ./install.sh"

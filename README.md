@@ -33,8 +33,9 @@ cd claude-code-configs
 `install.sh` performs the following:
 
 1. Backs up existing settings to `~/.claude/backups/`
-2. Creates **symlinks** for `CLAUDE.md`, `RTK.md`, `rules/`, `hooks/` → `~/.claude`
-3. Renders `settings.json.template` with path substitution and **merges** into `~/.claude/settings.json` (preserving existing plugin settings)
+2. **Copies** `RTK.md`, `rules/`, `hooks/` → `~/.claude`
+3. **Merges** `CLAUDE.md` → `~/.claude/CLAUDE.md` (preserving OMC-managed blocks)
+4. Renders `settings.json.template` with path substitution and **merges** into `~/.claude/settings.json` (preserving existing plugin settings)
 
 ## Dependencies (Optional)
 
@@ -55,17 +56,12 @@ These settings work fully when combined with the tools below.
 ### Syncing local changes back to the repo
 
 ```
-Edit/test settings locally
+Edit/test settings locally in ~/.claude
     │
-    ├─ Modified rules, hooks, CLAUDE.md, or RTK.md
-    │   └→ Already reflected in repo (symlinked)
-    │      git add && git commit
-    │
-    └─ Modified settings.json
-        └→ ./sync.sh && git add && git commit
+    └→ ./sync.sh && git add && git commit
 ```
 
-`sync.sh` strips plugin-managed fields from `~/.claude/settings.json` and replaces absolute paths with `{{CLAUDE_HOME}}` to update `settings.json.template`.
+`sync.sh` copies modified files from `~/.claude` back to the repo. For `CLAUDE.md`, OMC-managed blocks are stripped. For `settings.json`, plugin-managed fields are stripped and absolute paths are replaced with `{{CLAUDE_HOME}}`. Only files already tracked in the repo are synced (plugin-installed hooks/rules are ignored).
 
 ### Syncing to another machine
 
@@ -99,7 +95,7 @@ To add a new hook script:
 
 1. Create the script in `hooks/` (must be `chmod +x`)
 2. Register it in the `hooks` section of `settings.json.template`
-3. Re-run `./install.sh` or manually create a symlink
+3. Re-run `./install.sh`
 
 ## Caveats
 
