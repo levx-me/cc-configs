@@ -44,7 +44,7 @@ These settings work fully when combined with the tools below.
 | Tool | Purpose | Install |
 |------|---------|---------|
 | [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) | Multi-agent orchestration | `claude plugin install oh-my-claudecode@omc` |
-| [RTK](https://github.com/rtk-ai/rtk) | Token-saving CLI proxy | `cargo install rtk` |
+| [RTK](https://github.com/rtk-ai/rtk) | Token-saving CLI proxy | `curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh` |
 | [claude-mem](https://github.com/thedotmack/claude-mem) | Cross-session memory | `claude plugin install claude-mem@thedotmack` |
 | [jq](https://jqlang.github.io/jq/) | Hook script dependency | `brew install jq` |
 
