@@ -25,7 +25,7 @@ A repository for managing and sharing Claude Code global settings (`~/.claude`).
 ## Quick Start
 
 ```bash
-git clone https://github.com/<USER>/claude-code-configs.git
+git clone https://github.com/xd-protocol/claude-code-configs.git
 cd claude-code-configs
 ./install.sh
 ```
