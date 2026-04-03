@@ -1,0 +1,59 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "mcp__plugin_oh-my-claudecode_t__state_write",
+      "mcp__plugin_oh-my-claudecode_t__state_clear",
+      "mcp__plugin_claude-mem_mcp-search__timeline",
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)",
+      "Bash(gh api:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(python3.11:*)",
+      "Bash(pip install:*)",
+      "Bash(.venv/bin/python:*)",
+      "Bash(.venv/bin/python3:*)",
+      "Bash(.venv/bin/pip:*)",
+      "Bash(cat:*)",
+      "Bash(chmod:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:pypi.org)",
+      "WebFetch(domain:supabase.com)",
+      "WebFetch(domain:python.supabase.com)",
+      "WebFetch(domain:docs.etherscan.io)",
+      "WebFetch(domain:docs.railway.com)",
+      "WebFetch(domain:base.blockscout.com)"
+    ],
+    "defaultMode": "acceptEdits"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "{{CLAUDE_HOME}}/hooks/rtk-rewrite.sh"
+          },
+          {
+            "type": "command",
+            "command": "{{CLAUDE_HOME}}/hooks/bash-auto-allow.sh"
+          },
+          {
+            "type": "command",
+            "command": "{{CLAUDE_HOME}}/hooks/git-guard-hook.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "language": "한국어",
+  "effortLevel": "high"
+}
