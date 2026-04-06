@@ -31,7 +31,7 @@ fi
 
 # --- 2. RTK.md ---
 
-if [ -f "$CLAUDE_HOME/RTK.md" ]; then
+if [ -f "$CLAUDE_HOME/RTK.md" ] && [ ! -L "$CLAUDE_HOME/RTK.md" ]; then
   cp "$CLAUDE_HOME/RTK.md" "$REPO_DIR/RTK.md"
   info "RTK.md synced"
 fi
@@ -43,6 +43,7 @@ info "=== Rules ==="
 for rule_file in "$CLAUDE_HOME"/rules/*.md; do
   [ -f "$rule_file" ] || continue
   name=$(basename "$rule_file")
+  if [ -L "$rule_file" ]; then continue; fi
   if [ -f "$REPO_DIR/rules/$name" ]; then
     cp "$rule_file" "$REPO_DIR/rules/$name"
     info "  rules/$name synced"
@@ -56,6 +57,7 @@ info "=== Hooks ==="
 for hook_file in "$CLAUDE_HOME"/hooks/*; do
   [ -f "$hook_file" ] || continue
   name=$(basename "$hook_file")
+  if [ -L "$hook_file" ]; then continue; fi
   if [ -f "$REPO_DIR/hooks/$name" ]; then
     cp "$hook_file" "$REPO_DIR/hooks/$name"
     info "  hooks/$name synced"
@@ -78,7 +80,7 @@ if [ -f "$SOURCE" ]; then
     warn "jq is required for settings.json sync: brew install jq"
   else
     # Strip plugin-managed fields + replace absolute paths with placeholder
-    jq 'del(.enabledPlugins, .extraKnownMarketplaces, .statusLine)' "$SOURCE" \
+    jq 'del(.enabledPlugins, .extraKnownMarketplaces, .statusLine, .permissions.allow)' "$SOURCE" \
       | sed "s|$CLAUDE_HOME|{{CLAUDE_HOME}}|g" \
       > "$TARGET"
     info "  settings.json.template synced"
