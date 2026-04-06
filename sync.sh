@@ -14,19 +14,11 @@ NC='\033[0m'
 info() { echo -e "${GREEN}[INFO]${NC} $1"; }
 warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
 
-# --- 1. CLAUDE.md: strip OMC block, sync base content back ---
+# --- 1. CLAUDE.md ---
 
-CLAUDE_MD_SRC="$CLAUDE_HOME/CLAUDE.md"
-CLAUDE_MD_DEST="$REPO_DIR/CLAUDE.md"
-
-if [ -f "$CLAUDE_MD_SRC" ]; then
-  # Keep only the non-OMC content for the repo
-  sed '/<!-- OMC:START -->/,/<!-- OMC:END -->/d' "$CLAUDE_MD_SRC" \
-    | sed '/^$/N;/^\n$/d' \
-    > "$CLAUDE_MD_DEST"
-  info "CLAUDE.md synced (OMC block stripped)"
-else
-  warn "CLAUDE.md not found in $CLAUDE_HOME. Skipping."
+if [ -f "$CLAUDE_HOME/CLAUDE.md" ] && [ ! -L "$CLAUDE_HOME/CLAUDE.md" ]; then
+  cp "$CLAUDE_HOME/CLAUDE.md" "$REPO_DIR/CLAUDE.md"
+  info "CLAUDE.md synced"
 fi
 
 # --- 2. RTK.md ---

@@ -55,43 +55,13 @@ copy_file() {
   info "  Copied: $(basename "$dest")"
 }
 
-# --- 1. CLAUDE.md (merge: preserve OMC block from existing) ---
+# --- 1. CLAUDE.md ---
 
 info ""
 info "=== CLAUDE.md ==="
 
-CLAUDE_MD_SRC="$REPO_DIR/CLAUDE.md"
-CLAUDE_MD_DEST="$CLAUDE_HOME/CLAUDE.md"
-
-if [ -f "$CLAUDE_MD_SRC" ]; then
-  # Remove existing symlink if present
-  if [ -L "$CLAUDE_MD_DEST" ]; then
-    rm "$CLAUDE_MD_DEST"
-  fi
-
-  if [ -f "$CLAUDE_MD_DEST" ]; then
-    backup_if_exists "$CLAUDE_MD_DEST"
-
-    # Extract OMC block from existing file
-    OMC_BLOCK=""
-    if grep -q '<!-- OMC:START -->' "$CLAUDE_MD_DEST" 2>/dev/null; then
-      OMC_BLOCK=$(sed -n '/<!-- OMC:START -->/,/<!-- OMC:END -->/p' "$CLAUDE_MD_DEST")
-    fi
-
-    # Extract non-OMC content from repo source
-    NON_OMC=$(sed '/<!-- OMC:START -->/,/<!-- OMC:END -->/d' "$CLAUDE_MD_SRC")
-
-    # Assemble: existing OMC block + repo's non-OMC content
-    if [ -n "$OMC_BLOCK" ]; then
-      printf '%s\n\n%s\n' "$OMC_BLOCK" "$NON_OMC" > "$CLAUDE_MD_DEST"
-    else
-      echo "$NON_OMC" > "$CLAUDE_MD_DEST"
-    fi
-    info "  CLAUDE.md merged (OMC block preserved, base content updated)"
-  else
-    cp "$CLAUDE_MD_SRC" "$CLAUDE_MD_DEST"
-    info "  CLAUDE.md created"
-  fi
+if [ -f "$REPO_DIR/CLAUDE.md" ]; then
+  copy_file "$REPO_DIR/CLAUDE.md" "$CLAUDE_HOME/CLAUDE.md"
 fi
 
 # --- 2. RTK.md ---
