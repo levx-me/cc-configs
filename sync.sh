@@ -38,29 +38,37 @@ fi
 
 # --- 3. Rules ---
 
+info ""
+info "=== Rules ==="
 for rule_file in "$CLAUDE_HOME"/rules/*.md; do
   [ -f "$rule_file" ] || continue
   name=$(basename "$rule_file")
-  # Only sync files that exist in the repo (don't pull in external rules)
   if [ -f "$REPO_DIR/rules/$name" ]; then
     cp "$rule_file" "$REPO_DIR/rules/$name"
-    info "rules/$name synced"
+    info "  rules/$name synced"
   fi
 done
 
 # --- 4. Hooks ---
 
+info ""
+info "=== Hooks ==="
 for hook_file in "$CLAUDE_HOME"/hooks/*; do
   [ -f "$hook_file" ] || continue
   name=$(basename "$hook_file")
-  # Only sync files that exist in the repo (don't pull in plugin-installed hooks)
   if [ -f "$REPO_DIR/hooks/$name" ]; then
     cp "$hook_file" "$REPO_DIR/hooks/$name"
-    info "hooks/$name synced"
+    info "  hooks/$name synced"
   fi
 done
 
+# Ensure scripts are executable
+chmod +x "$REPO_DIR"/hooks/*.sh 2>/dev/null || true
+
 # --- 5. settings.json -> settings.json.template ---
+
+info ""
+info "=== Settings ==="
 
 SOURCE="$CLAUDE_HOME/settings.json"
 TARGET="$REPO_DIR/settings.json.template"
@@ -73,7 +81,7 @@ if [ -f "$SOURCE" ]; then
     jq 'del(.enabledPlugins, .extraKnownMarketplaces, .statusLine)' "$SOURCE" \
       | sed "s|$CLAUDE_HOME|{{CLAUDE_HOME}}|g" \
       > "$TARGET"
-    info "settings.json.template synced"
+    info "  settings.json.template synced"
   fi
 else
   warn "settings.json not found in $CLAUDE_HOME. Skipping."
@@ -81,5 +89,7 @@ fi
 
 # --- Done ---
 
+info ""
+info "=== Reverse sync complete ==="
 info ""
 info "Review changes: cd $REPO_DIR && git diff"
