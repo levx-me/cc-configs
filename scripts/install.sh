@@ -124,8 +124,7 @@ if has_component "settings"; then
       PLUGIN_FIELDS=$(jq '{
         enabledPlugins: .enabledPlugins,
         extraKnownMarketplaces: .extraKnownMarketplaces,
-        statusLine: .statusLine,
-        permissions: {allow: .permissions.allow}
+        statusLine: .statusLine
       } | with_entries(select(.value != null))' "$TARGET" 2>/dev/null || echo '{}')
       echo "$RENDERED" | jq --argjson p "$PLUGIN_FIELDS" '. * $p' > "$TARGET"
       info "  settings.json merged"
