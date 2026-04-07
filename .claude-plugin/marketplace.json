@@ -3,7 +3,7 @@
   "name": "levx-me",
   "description": "levx's Claude Code global configuration — CLAUDE.md, rules, hooks, and settings in one interactive install",
   "owner": {
-    "name": "levx",
+    "name": "LevX",
     "email": ""
   },
   "plugins": [
@@ -12,7 +12,7 @@
       "description": "Deploy levx's Claude Code global settings to any machine in seconds. Interactive installer for CLAUDE.md, rules, hooks, and settings.json.",
       "version": "1.0.0",
       "author": {
-        "name": "levx",
+        "name": "LevX",
         "email": ""
       },
       "source": "./",
