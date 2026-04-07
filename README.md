@@ -1,107 +1,87 @@
 # Claude Code Configs
 
-A repository for managing and sharing Claude Code global settings (`~/.claude`).
+A Claude Code marketplace plugin for managing global settings (`~/.claude`).
+
+## Quick Start
+
+### As a Claude Code plugin (recommended)
+
+```bash
+# Add this repo as a marketplace source (one time)
+claude /plugin marketplace add https://github.com/levx/claude-code-configs
+
+# Install the plugin
+claude plugin install cc-configs@levx
+
+# Deploy configs interactively
+/cc-configs:install
+```
+
+### Manual install
+
+```bash
+git clone git@github.com:levx/claude-code-configs.git
+cd claude-code-configs
+./scripts/install.sh
+# or selectively:
+./scripts/install.sh --components=claude,rules --hooks=auto-allow,git-guard
+```
 
 ## Structure
 
 ```
-├── CLAUDE.md                  # Global instructions (includes OMC orchestration)
-├── RTK.md                     # RTK token-saving CLI guide
+├── SKILL.md                       # Plugin manifest
+├── skills/
+│   └── install/
+│       └── SKILL.md               # /cc-configs:install skill
+├── scripts/
+│   └── install.sh                 # Installer (--components / --hooks args)
+├── CLAUDE.md                      # Global Claude instructions (includes OMC)
+├── RTK.md                         # RTK token-saving CLI guide
 ├── rules/
-│   ├── cli-checklist.md       # CLI tool building checklist
-│   ├── readme-guide.md        # README writing guide
-│   └── refactor-safety.md     # Refactoring safety rules
+│   ├── cli-checklist.md
+│   ├── readme-guide.md
+│   ├── refactor-safety.md
+│   └── wiki.md
 ├── hooks/
-│   ├── bash-auto-allow.sh     # Auto-allow Bash commands (blocks dangerous patterns)
-│   ├── git-guard-hook.sh      # Injects checklists on git commit/push
-│   ├── rtk-rewrite.sh         # RTK token-saving auto-rewrite
+│   ├── bash-auto-allow.sh
+│   ├── git-guard-hook.sh
+│   ├── rtk-rewrite.sh
 │   ├── pre-commit-checklist.md
 │   └── pre-push-checklist.md
-├── settings.json.template     # Settings template (with path placeholders)
-├── install.sh                 # Install script
-└── sync.sh                    # Reverse sync script
+└── settings.json.template
 ```
 
-## Quick Start
+## scripts/install.sh Options
 
 ```bash
-git clone https://github.com/xd-protocol/claude-code-configs.git
-cd claude-code-configs
-./install.sh
+./scripts/install.sh                                        # Install all
+./scripts/install.sh --components=claude,rules              # Selective
+./scripts/install.sh --components=hooks --hooks=git-guard   # Specific hooks
 ```
 
-`install.sh` performs the following:
+**Components:** `claude`, `rules`, `hooks`, `settings`
 
-1. Backs up existing settings to `~/.claude/backups/`
-2. **Copies** `RTK.md`, `rules/`, `hooks/` → `~/.claude`
-3. **Merges** `CLAUDE.md` → `~/.claude/CLAUDE.md` (preserving OMC-managed blocks)
-4. Renders `settings.json.template` with path substitution and **merges** into `~/.claude/settings.json` (preserving existing plugin settings)
+**Hooks:** `auto-allow`, `git-guard`, `rtk-rewrite`
+
+## Syncing local changes back to the repo
+
+```bash
+./sync.sh && git add -A && git commit -m "chore: sync local changes"
+```
 
 ## Dependencies (Optional)
-
-These settings work fully when combined with the tools below.
-**Always install via official channels.** This repo only manages configuration, not tool installation.
 
 | Tool | Purpose | Install |
 |------|---------|---------|
 | [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) | Multi-agent orchestration | `claude plugin install oh-my-claudecode@omc` |
-| [RTK](https://github.com/rtk-ai/rtk) | Token-saving CLI proxy | `brew install rtk` |
-| [claude-mem](https://github.com/thedotmack/claude-mem) | Cross-session memory | `claude plugin install claude-mem@thedotmack` |
-| [jq](https://jqlang.github.io/jq/) | Hook script dependency | `brew install jq` |
-
-> **Install order:** Install dependencies first → run `./install.sh`. Plugin-managed fields (`enabledPlugins`, `statusLine`, etc.) in `settings.json` are preserved during merge.
-
-## Workflow
-
-### Syncing local changes back to the repo
-
-```
-Edit/test settings locally in ~/.claude
-    │
-    └→ ./sync.sh && git add && git commit
-```
-
-`sync.sh` copies modified files from `~/.claude` back to the repo. For `CLAUDE.md`, OMC-managed blocks are stripped. For `settings.json`, plugin-managed fields are stripped and absolute paths are replaced with `{{CLAUDE_HOME}}`. Only files already tracked in the repo are synced (plugin-installed hooks/rules are ignored).
-
-### Syncing to another machine
-
-```bash
-cd claude-code-configs
-git pull
-./install.sh
-```
-
-## Customization
-
-### settings.json.template
-
-`{{CLAUDE_HOME}}` is automatically replaced with `~/.claude` at install time.
-
-Fields you may want to customize:
-
-- **`permissions.allow`** — Auto-allowed tool/command patterns. Add or remove domains and commands for your projects.
-- **`permissions.defaultMode`** — `"acceptEdits"` (auto-approve file edits) or `"default"` (confirm all edits)
-- **`hooks`** — Add or remove hook scripts. Place new hooks in the `hooks/` directory and register them here.
-- **`language`** — Claude response language
-- **`effortLevel`** — `"high"`, `"medium"`, or `"low"`
-
-### rules/
-
-Add `.md` files to the `rules/` directory and Claude Code will automatically pick them up. One file = one rule.
-
-### hooks/
-
-To add a new hook script:
-
-1. Create the script in `hooks/` (must be `chmod +x`)
-2. Register it in the `hooks` section of `settings.json.template`
-3. Re-run `./install.sh`
+| [RTK](https://github.com/rtk-ai/rtk) | Token-saving CLI proxy | `cargo install rtk` |
+| [jq](https://jqlang.github.io/jq/) | Hook dependency | `brew install jq` |
 
 ## Caveats
 
-- **No secrets**: Never commit files containing tokens or keys (`.mcp.json`, `.env`, etc.).
-- **Absolute paths**: `settings.json` contains machine-specific absolute paths. Always use the `{{CLAUDE_HOME}}` placeholder in `settings.json.template`.
-- **Plugin settings**: `enabledPlugins`, `extraKnownMarketplaces`, and `statusLine` should be managed by official plugin installation on each machine.
+- Never commit secrets (`.mcp.json`, `.env`, etc.)
+- `enabledPlugins`, `extraKnownMarketplaces`, `statusLine` are managed by Claude Code — preserved during merge
 
 ## License
 
