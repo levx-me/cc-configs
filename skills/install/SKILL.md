@@ -28,8 +28,8 @@ Use AskUserQuestion (multiSelect: true):
 **Options:**
 1. **CLAUDE.md** — Global Claude instructions (value: `claude`) — default selected
 2. **rules/** — Auto-injected project rules (value: `rules`) — default selected
-3. **hooks/** — PreToolUse bash hooks (value: `hooks`)
-4. **settings.json** — Merge settings template (value: `settings`)
+3. **hooks/** — PreToolUse bash hooks (value: `hooks`) — default selected
+4. **settings.json** — Merge settings template (value: `settings`) — default selected
 
 Store selected values as COMPONENTS (comma-joined, e.g. `claude,rules`).
 
