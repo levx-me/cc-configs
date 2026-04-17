@@ -27,7 +27,7 @@ Claude Code에서 실행:
 ### 수동 설치
 
 ```bash
-git clone git@github.com:levx-me/cc-configs.git
+git clone https://github.com/levx-me/cc-configs
 cd cc-configs
 ./scripts/install.sh
 ```

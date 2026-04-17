@@ -27,7 +27,7 @@ Select the components you want — they get deployed to `~/.claude` automaticall
 ### Manual install
 
 ```bash
-git clone git@github.com:levx-me/cc-configs.git
+git clone https://github.com/levx-me/cc-configs
 cd cc-configs
 ./scripts/install.sh
 ```

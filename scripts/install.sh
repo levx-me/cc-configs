@@ -17,18 +17,21 @@ warn()  { echo -e "${YELLOW}[WARN]${NC} $1"; }
 error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 # Parse arguments
-COMPONENTS="claude,rules,hooks,settings"  # default: all
+COMPONENTS="claude,rules,hooks,settings,plugins"  # default: all
 HOOKS="auto-allow,git-guard,rtk-rewrite"  # default: all hooks
+PLUGINS="oh-my-claudecode,caveman"         # default: all plugins
 
 for arg in "$@"; do
   case "$arg" in
     --components=*) COMPONENTS="${arg#--components=}" ;;
     --hooks=*)      HOOKS="${arg#--hooks=}" ;;
+    --plugins=*)    PLUGINS="${arg#--plugins=}" ;;
   esac
 done
 
 has_component() { echo "$COMPONENTS" | tr ',' '\n' | grep -qx "$1"; }
 has_hook()      { echo "$HOOKS"       | tr ',' '\n' | grep -qx "$1"; }
+has_plugin()    { echo "$PLUGINS"     | tr ',' '\n' | grep -qx "$1"; }
 
 # Validate
 if [ ! -d "$CLAUDE_HOME" ]; then
@@ -133,6 +136,27 @@ if has_component "settings"; then
       info "  settings.json created"
     fi
     INSTALLED+=("settings.json")
+  fi
+fi
+
+# --- plugins ---
+if has_component "plugins"; then
+  info "=== plugins ==="
+
+  if ! command -v claude &>/dev/null; then
+    warn "claude CLI not found. Skipping plugin installation."
+  else
+    install_plugin() {
+      local name="$1" marketplace="$2" plugin_id="$3"
+      info "  Installing plugin: $name"
+      claude plugin marketplace add "$marketplace" 2>/dev/null || true
+      claude plugin install "$plugin_id" && \
+        INSTALLED+=("plugin:$name") || \
+        warn "  Failed to install $name (may already be installed)"
+    }
+
+    has_plugin "oh-my-claudecode" && install_plugin "oh-my-claudecode" "Yeachan-Heo/oh-my-claudecode" "oh-my-claudecode@omc"
+    has_plugin "caveman" && install_plugin "caveman" "JuliusBrussee/caveman" "caveman@caveman"
   fi
 fi
 
