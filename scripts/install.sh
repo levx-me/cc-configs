@@ -17,7 +17,7 @@ warn()  { echo -e "${YELLOW}[WARN]${NC} $1"; }
 error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 # Parse arguments
-COMPONENTS="claude,rules,hooks,settings,plugins"  # default: all
+COMPONENTS="rules,hooks,settings,plugins"  # default: all
 HOOKS="auto-allow,git-guard,rtk-rewrite"  # default: all hooks
 PLUGINS="oh-my-claudecode,caveman"         # default: all plugins
 
@@ -60,13 +60,6 @@ copy_file() {
 }
 
 INSTALLED=()
-
-# --- CLAUDE.md ---
-if has_component "claude"; then
-  info "=== CLAUDE.md ==="
-  copy_file "$REPO_DIR/CLAUDE.md" "$CLAUDE_HOME/CLAUDE.md"
-  INSTALLED+=("CLAUDE.md")
-fi
 
 # --- rules/ ---
 if has_component "rules"; then

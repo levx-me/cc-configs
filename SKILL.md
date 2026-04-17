@@ -1,6 +1,6 @@
 # cc-configs
 
-Claude Code global configuration manager — installs CLAUDE.md, rules, hooks, and settings to `~/.claude`.
+Claude Code global configuration manager — installs rules, hooks, and settings to `~/.claude`.
 
 ## Skills
 

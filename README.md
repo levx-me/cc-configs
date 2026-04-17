@@ -2,7 +2,7 @@
 
 > Deploy levx's Claude Code global settings to any machine in seconds.
 
-A Claude Code plugin that interactively installs CLAUDE.md, rules, hooks, and settings into `~/.claude`.
+A Claude Code plugin that interactively installs rules, hooks, and settings into `~/.claude`.
 
 **[한국어 문서 →](./README.ko.md)**
 
@@ -35,16 +35,13 @@ cd cc-configs
 Selective install:
 
 ```bash
-./scripts/install.sh --components=claude,rules
+./scripts/install.sh --components=rules
 ./scripts/install.sh --components=hooks --hooks=auto-allow,git-guard
 ```
 
 ---
 
 ## What's included
-
-### CLAUDE.md
-Global Claude Code instructions. Includes the [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) orchestration block for automatic multi-agent workflows.
 
 ### rules/
 Markdown rules automatically injected into every project.
@@ -67,6 +64,17 @@ Bash scripts that run on `PreToolUse` events.
 
 ### settings.json
 Renders `settings.json.template` with your actual `~/.claude` path and smart-merges into your existing settings. Plugin-managed fields (`enabledPlugins`, `statusLine`, etc.) are always preserved.
+
+### plugins
+Claude Code plugins installed automatically in order.
+
+| Plugin | Purpose |
+|--------|---------|
+| [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) | Multi-agent orchestration layer |
+| [caveman](https://github.com/JuliusBrussee/caveman) | 65–75% response token savings |
+
+Skip plugins: `--components=rules,hooks,settings`  
+Select specific plugins: `--plugins=oh-my-claudecode`
 
 ---
 
@@ -100,7 +108,8 @@ git push
 
 | Tool | Purpose | Install |
 |------|---------|---------|
-| [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) | Multi-agent orchestration | `claude plugin install oh-my-claudecode@omc` |
+| [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) | Multi-agent orchestration | auto-installed via `plugins` component |
+| [caveman](https://github.com/JuliusBrussee/caveman) | 65–75% response token savings | auto-installed via `plugins` component |
 | [RTK](https://github.com/rtk-ai/rtk) | Token-saving CLI proxy (60–90% savings) | `cargo install rtk` |
 | [jq](https://jqlang.github.io/jq/) | Required by hook scripts | `brew install jq` |
 

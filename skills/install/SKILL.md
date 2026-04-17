@@ -38,10 +38,9 @@ Use AskUserQuestion (multiSelect: true):
 **Question:** "어떤 컴포넌트를 설치할까요?"
 
 **Options:**
-1. **CLAUDE.md** — Global Claude instructions (value: `claude`) — default selected
-2. **rules/** — Auto-injected project rules (value: `rules`) — default selected
-3. **hooks/** — PreToolUse bash hooks (value: `hooks`) — default selected
-4. **settings.json** — Merge settings template (value: `settings`) — default selected
+1. **rules/** — Auto-injected project rules (value: `rules`) — default selected
+2. **hooks/** — PreToolUse bash hooks (value: `hooks`) — default selected
+3. **settings.json** — Merge settings template (value: `settings`) — default selected
 
 Store selected values as COMPONENTS (comma-joined). If PLUGINS is non-empty, append `plugins` to COMPONENTS.
 
@@ -92,4 +91,4 @@ RTK 미설치: cargo install rtk 로 설치하세요.
 https://github.com/rtk-ai/rtk
 ```
 
-Tell user to **restart Claude Code** for CLAUDE.md and hooks changes to take effect.
+Tell user to **restart Claude Code** for hooks changes to take effect.

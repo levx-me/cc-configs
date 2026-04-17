@@ -2,7 +2,7 @@
 
 > levx의 Claude Code 전역 설정을 어디서든 한 번에 설치하세요.
 
-`~/.claude`에 CLAUDE.md, rules, hooks, settings를 대화형으로 배포하는 Claude Code 플러그인입니다.
+`~/.claude`에 rules, hooks, settings를 대화형으로 배포하는 Claude Code 플러그인입니다.
 
 **[English →](./README.md)**
 
@@ -35,16 +35,13 @@ cd cc-configs
 선택적 설치:
 
 ```bash
-./scripts/install.sh --components=claude,rules
+./scripts/install.sh --components=rules
 ./scripts/install.sh --components=hooks --hooks=auto-allow,git-guard
 ```
 
 ---
 
 ## 포함 내용
-
-### CLAUDE.md
-Claude Code의 전역 동작 지침입니다. [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) 오케스트레이션 블록이 포함되어 있어 멀티 에이전트 워크플로우를 자동으로 활성화합니다.
 
 ### rules/
 프로젝트마다 자동으로 주입되는 규칙 파일입니다.
@@ -67,6 +64,17 @@ Claude Code의 전역 동작 지침입니다. [oh-my-claudecode](https://github.
 
 ### settings.json
 `settings.json.template`의 `{{CLAUDE_HOME}}`을 실제 경로로 치환 후 기존 설정과 스마트 머지합니다. `enabledPlugins`, `statusLine` 등 플러그인 관리 필드는 보존됩니다.
+
+### plugins
+설치 순서대로 자동 설치되는 Claude Code 플러그인입니다.
+
+| 플러그인 | 용도 |
+|---------|------|
+| [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) | 멀티 에이전트 오케스트레이션 레이어 |
+| [caveman](https://github.com/JuliusBrussee/caveman) | 응답 토큰 65~75% 절감 |
+
+플러그인 제외: `--components=rules,hooks,settings`  
+특정 플러그인만 설치: `--plugins=oh-my-claudecode`
 
 ---
 
@@ -104,7 +112,8 @@ git push
 
 | 도구 | 용도 | 설치 |
 |------|------|------|
-| [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) | 멀티 에이전트 오케스트레이션 | `claude plugin install oh-my-claudecode@omc` |
+| [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) | 멀티 에이전트 오케스트레이션 | `plugins` 컴포넌트로 자동 설치 |
+| [caveman](https://github.com/JuliusBrussee/caveman) | 응답 토큰 65~75% 절감 | `plugins` 컴포넌트로 자동 설치 |
 | [RTK](https://github.com/rtk-ai/rtk) | 토큰 절약 CLI 프록시 (60~90% 절감) | `cargo install rtk` |
 | [jq](https://jqlang.github.io/jq/) | 훅 스크립트 의존성 | `brew install jq` |
 
