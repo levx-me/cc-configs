@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "levx-me",
-  "description": "levx's Claude Code global configuration — CLAUDE.md, rules, hooks, and settings in one interactive install",
+  "description": "levx's Claude Code global configuration — rules, hooks, settings, and plugins in one interactive install",
   "owner": {
     "name": "LevX",
     "email": ""
@@ -9,8 +9,8 @@
   "plugins": [
     {
       "name": "cc-configs",
-      "description": "Deploy levx's Claude Code global settings to any machine in seconds. Interactive installer for CLAUDE.md, rules, hooks, and settings.json.",
-      "version": "1.0.0",
+      "description": "Deploy levx's Claude Code global settings to any machine in seconds. Interactive installer for rules, hooks, settings.json, and plugins (oh-my-claudecode, caveman).",
+      "version": "1.1.0",
       "author": {
         "name": "LevX",
         "email": ""
@@ -27,5 +27,5 @@
       ]
     }
   ],
-  "version": "1.0.0"
+  "version": "1.1.0"
 }
