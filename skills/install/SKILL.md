@@ -23,11 +23,11 @@ And stop.
 
 Use AskUserQuestion (multiSelect: true):
 
-**Question:** "어떤 플러그인을 설치할까요?"
+**Question:** "Which plugins would you like to install?"
 
 **Options:**
-1. **oh-my-claudecode** — 멀티에이전트 오케스트레이션 레이어 (value: `oh-my-claudecode`) — default selected
-2. **caveman** — 응답 토큰 65~75% 절감 압축 플러그인 (value: `caveman`) — default selected
+1. **oh-my-claudecode** — Multi-agent orchestration layer (value: `oh-my-claudecode`) — default selected
+2. **caveman** — 65–75% response token savings (value: `caveman`) — default selected
 
 Store selected values as PLUGINS (comma-joined). If none selected, set PLUGINS to empty string and exclude `plugins` from COMPONENTS.
 
@@ -35,7 +35,7 @@ Store selected values as PLUGINS (comma-joined). If none selected, set PLUGINS t
 
 Use AskUserQuestion (multiSelect: true):
 
-**Question:** "어떤 컴포넌트를 설치할까요?"
+**Question:** "Which components would you like to install?"
 
 **Options:**
 1. **rules/** — Auto-injected project rules (value: `rules`) — default selected
@@ -50,12 +50,12 @@ If nothing selected at all (no plugins, no components), tell user "Nothing selec
 
 If `hooks` is in COMPONENTS, use AskUserQuestion (multiSelect: true):
 
-**Question:** "어떤 훅을 설치할까요?"
+**Question:** "Which hooks would you like to install?"
 
 **Options:**
-1. **bash-auto-allow** — 위험 패턴 제외 Bash 명령 자동 허용 (value: `auto-allow`) — default selected
-2. **git-guard** — git commit/push 시 안전 체크리스트 주입 (value: `git-guard`) — default selected
-3. **rtk-rewrite** — RTK 토큰 절약 프록시 자동 재작성 (value: `rtk-rewrite`)
+1. **bash-auto-allow** — Auto-allow Bash commands, blocking dangerous patterns (value: `auto-allow`) — default selected
+2. **git-guard** — Injects safety checklists before git commit/push (value: `git-guard`) — default selected
+3. **rtk-rewrite** — Transparently rewrites commands through RTK for token savings (value: `rtk-rewrite`)
 
 Store selected values as HOOKS (comma-joined). If none selected, remove `hooks` from COMPONENTS.
 
@@ -73,7 +73,7 @@ bash "${CLAUDE_PLUGIN_ROOT}/scripts/install.sh" \
 Example (all selected):
 ```bash
 bash "${CLAUDE_PLUGIN_ROOT}/scripts/install.sh" \
-  --components=claude,rules,hooks,settings,plugins \
+  --components=rules,hooks,settings,plugins \
   --hooks=auto-allow,git-guard \
   --plugins=oh-my-claudecode,caveman
 ```
@@ -87,7 +87,7 @@ Display the install script output to the user.
 
 If rtk-rewrite was selected and `rtk` is not in PATH, remind:
 ```
-RTK 미설치: cargo install rtk 로 설치하세요.
+RTK not installed: run cargo install rtk
 https://github.com/rtk-ai/rtk
 ```
 
