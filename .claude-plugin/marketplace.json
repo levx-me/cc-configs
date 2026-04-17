@@ -10,7 +10,7 @@
     {
       "name": "cc-configs",
       "description": "Deploy levx's Claude Code global settings to any machine in seconds. Interactive installer for rules, hooks, settings.json, and plugins (oh-my-claudecode, caveman).",
-      "version": "1.1.0",
+      "version": "1.1.2",
       "author": {
         "name": "LevX",
         "email": ""
@@ -27,5 +27,5 @@
       ]
     }
   ],
-  "version": "1.1.0"
+  "version": "1.1.2"
 }
