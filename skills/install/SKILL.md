@@ -19,7 +19,19 @@ Please reinstall the plugin: claude plugin install cc-configs@levx
 ```
 And stop.
 
-## Step 2: Select components
+## Step 2: Select plugins
+
+Use AskUserQuestion (multiSelect: true):
+
+**Question:** "어떤 플러그인을 설치할까요?"
+
+**Options:**
+1. **oh-my-claudecode** — 멀티에이전트 오케스트레이션 레이어 (value: `oh-my-claudecode`) — default selected
+2. **caveman** — 응답 토큰 65~75% 절감 압축 플러그인 (value: `caveman`) — default selected
+
+Store selected values as PLUGINS (comma-joined). If none selected, set PLUGINS to empty string and exclude `plugins` from COMPONENTS.
+
+## Step 3: Select components
 
 Use AskUserQuestion (multiSelect: true):
 
@@ -31,11 +43,11 @@ Use AskUserQuestion (multiSelect: true):
 3. **hooks/** — PreToolUse bash hooks (value: `hooks`) — default selected
 4. **settings.json** — Merge settings template (value: `settings`) — default selected
 
-Store selected values as COMPONENTS (comma-joined, e.g. `claude,rules`).
+Store selected values as COMPONENTS (comma-joined). If PLUGINS is non-empty, append `plugins` to COMPONENTS.
 
-If no components selected, tell user "Nothing selected. Exiting." and stop.
+If nothing selected at all (no plugins, no components), tell user "Nothing selected. Exiting." and stop.
 
-## Step 3: Select hooks (only if hooks selected)
+## Step 4: Select hooks (only if hooks selected)
 
 If `hooks` is in COMPONENTS, use AskUserQuestion (multiSelect: true):
 
@@ -48,26 +60,29 @@ If `hooks` is in COMPONENTS, use AskUserQuestion (multiSelect: true):
 
 Store selected values as HOOKS (comma-joined). If none selected, remove `hooks` from COMPONENTS.
 
-## Step 4: Run install script
+## Step 5: Run install script
 
 Construct the command from user selections and run it:
 
 ```bash
 bash "${CLAUDE_PLUGIN_ROOT}/scripts/install.sh" \
   --components=<COMPONENTS> \
-  --hooks=<HOOKS>
+  --hooks=<HOOKS> \
+  --plugins=<PLUGINS>
 ```
 
-Example (CLAUDE.md + rules + hooks with auto-allow and git-guard):
+Example (all selected):
 ```bash
 bash "${CLAUDE_PLUGIN_ROOT}/scripts/install.sh" \
-  --components=claude,rules,hooks \
-  --hooks=auto-allow,git-guard
+  --components=claude,rules,hooks,settings,plugins \
+  --hooks=auto-allow,git-guard \
+  --plugins=oh-my-claudecode,caveman
 ```
 
 If `hooks` is not in COMPONENTS, omit the `--hooks` flag entirely.
+If PLUGINS is empty, omit the `--plugins` flag entirely.
 
-## Step 5: Report results
+## Step 6: Report results
 
 Display the install script output to the user.
 
